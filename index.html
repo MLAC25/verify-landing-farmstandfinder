@@ -3,58 +3,115 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Account Verification</title>
-  <meta name="description" content="Confirm your new account and return to the app." />
+  <title>Account Verification • Farmstand Finder</title>
+  <meta name="description" content="Verify your Farmstand Finder account and return to the app." />
+  <meta name="color-scheme" content="dark">
   <style>
     :root{
       --bg:#000000; --card:#141414; --text:#E6E6E6; --sub:#A1A1A1;
       --accent:#34C759; --danger:#ef4444; --border:#2A2A2A;
     }
+    *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0; background:var(--bg); color:var(--text);
       font-family:system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;
       display:flex; align-items:center; justify-content:center; padding:24px;
     }
-    .card{
-      width:100%; max-width:560px; background:var(--card); border:1px solid var(--border);
-      border-radius:16px; padding:28px; box-shadow:0 10px 30px rgba(0,0,0,.35); text-align:center;
+    .wrap{
+      width:100%; max-width:680px;
+      background:linear-gradient(180deg, rgba(20,20,20,.9), rgba(20,20,20,.9)), var(--card);
+      border:1px solid var(--border); border-radius:20px; padding:28px;
+      box-shadow:0 20px 60px rgba(0,0,0,.45);
     }
-    .badge{display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; margin-bottom:10px; border:1px solid var(--border); color:var(--sub)}
-    h1{margin:10px 0 8px; font-size:24px}
-    p{margin:10px 0; color:var(--sub); line-height:1.5}
-    .ok{color:var(--accent)}
-    .err{color:var(--danger)}
-    .cta{margin-top:18px; display:inline-block; padding:10px 14px; border-radius:10px; border:1px solid var(--border); color:var(--text); text-decoration:none}
-    .small{font-size:12px; color:var(--sub); margin-top:14px}
+    header{display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:6px}
+    header img{height:36px; width:auto; display:block; filter:drop-shadow(0 2px 6px rgba(0,0,0,.25))}
+    .badge{
+      display:inline-block; margin:0 auto 8px; padding:6px 10px;
+      border:1px solid var(--border); border-radius:999px; color:var(--sub); font-size:12px;
+      text-align:center;
+    }
+    h1{
+      margin:8px 0 10px; font-size:26px; line-height:1.2; text-align:center;
+      letter-spacing:.2px;
+    }
+    .ok{color:var(--accent)} .err{color:var(--danger)}
+    p{margin:10px 0; color:var(--sub); line-height:1.6; text-align:center}
+    .cta-row{display:flex; gap:12px; justify-content:center; margin-top:18px; flex-wrap:wrap}
+    .btn{
+      appearance:none; border:1px solid var(--border); background:transparent; color:var(--text);
+      padding:12px 16px; border-radius:12px; cursor:pointer; text-decoration:none; font-weight:600;
+      transition:transform .06s ease, opacity .2s ease, border-color .2s ease;
+    }
+    .btn:hover{transform:translateY(-1px); border-color:#3a3a3a}
+    .btn-primary{border-color:rgba(52,199,89,.4)}
+    .btn-primary:hover{border-color:var(--accent)}
+    .hr{height:1px; background:var(--border); margin:22px 0}
+    .support{
+      background:rgba(52,199,89,.08); border:1px solid rgba(52,199,89,.25);
+      border-radius:16px; padding:14px; text-align:center;
+    }
+    .support strong{color:var(--accent)}
+    .logo-thanks{
+      display:flex; align-items:center; justify-content:center; gap:10px; margin-top:10px; flex-wrap:wrap;
+    }
+    .logo-thanks img{height:28px; width:auto}
+    code{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; color:#c8c8c8}
+    .debug{font-size:12px; color:#8a8a8a; text-align:center; margin-top:10px; word-break:break-all}
   </style>
 </head>
 <body>
-  <main class="card" id="app">
-    <div class="badge">Account Verification</div>
-    <h1 id="title">Checking…</h1>
+  <main class="wrap" id="app">
+    <span class="badge">Account Verification</span>
+
+    <header>
+      <img id="brandLogo" src="" alt="Farmstand Finder logo" />
+      <h1 id="title">Checking…</h1>
+    </header>
+
     <p id="msg">One moment while we confirm your status.</p>
-    <a class="cta" id="backLink" href="#">Return to the app</a>
-    <div class="small" id="detail"></div>
+
+    <div class="cta-row">
+      <a class="btn btn-primary" id="backLink" href="#">Return to the app</a>
+    </div>
+
+    <div class="hr"></div>
+
+    <section class="support">
+      <p>
+        Thank you for downloading and using <strong>Farmstand&nbsp;Finder</strong>! 🌱  
+        Your support helps sustain <strong>local, independent farmers</strong> all over the world.  
+        We appreciate you being part of this community.
+      </p>
+      <div class="logo-thanks">
+        <img id="inlineLogo" src="" alt="Farmstand Finder logo">
+        <span>Farmstand Finder</span>
+      </div>
+    </section>
+
+    <div class="debug" id="detail"></div>
   </main>
 
   <script>
-    // Set this to your app/site deep link or web URL (custom domain works fine):
-    const RETURN_URL = 'https://your-custom-domain.tld/';
-    // Usage examples:
-    //   https://your-custom-domain.tld/?status=success
-    //   https://your-custom-domain.tld/?status=error
-    // Or pass through tokens and handle client-side if needed.
+    // ---- Customize these two values for your app ----
+    const RETURN_URL = 'https://yourapp.example.com/';          // deep link or website home
+    const LOGO_URL   = './logo.png';                            // place a logo file named logo.png in repo root OR change this URL
 
+    // --------------------------------------------------
     const params = new URLSearchParams(location.search);
     const status = (params.get('status') || '').toLowerCase();
 
-    const title = document.getElementById('title');
-    const msg = document.getElementById('msg');
-    const backLink = document.getElementById('backLink');
-    const detail = document.getElementById('detail');
+    const title   = document.getElementById('title');
+    const msg     = document.getElementById('msg');
+    const back    = document.getElementById('backLink');
+    const detail  = document.getElementById('detail');
+    const brand   = document.getElementById('brandLogo');
+    const inlineL = document.getElementById('inlineLogo');
 
-    backLink.href = RETURN_URL;
+    // set links + logo
+    back.href = RETURN_URL;
+    brand.src = LOGO_URL;
+    inlineL.src = LOGO_URL;
 
     if (status === 'success') {
       title.textContent = 'You’re verified! 🎉';
@@ -65,11 +122,11 @@
       title.textContent = 'Verification failed';
       title.classList.add('err');
       msg.textContent = 'We couldn’t confirm your account. The link may be expired or already used.';
-      detail.textContent = 'Request a new verification email and click the latest link.';
+      detail.innerHTML = 'Tip: request a new verification email and click the latest link.';
     } else {
       title.textContent = 'Almost there…';
-      msg.textContent = 'Open this page from your verification email link, or include ?status=success|error.';
-      detail.textContent = 'Example: ?status=success';
+      msg.textContent = 'Open this page from your verification email link, or include <code>?status=success</code> or <code>?status=error</code>.';
+      detail.innerHTML = 'Example: <code>?status=success</code>';
     }
   </script>
 </body>
