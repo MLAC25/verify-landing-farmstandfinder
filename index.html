@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Account Verification</title>
+  <meta name="description" content="Confirm your new account and return to the app." />
+  <style>
+    :root{
+      --bg:#000000; --card:#141414; --text:#E6E6E6; --sub:#A1A1A1;
+      --accent:#34C759; --danger:#ef4444; --border:#2A2A2A;
+    }
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--text);
+      font-family:system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .card{
+      width:100%; max-width:560px; background:var(--card); border:1px solid var(--border);
+      border-radius:16px; padding:28px; box-shadow:0 10px 30px rgba(0,0,0,.35); text-align:center;
+    }
+    .badge{display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; margin-bottom:10px; border:1px solid var(--border); color:var(--sub)}
+    h1{margin:10px 0 8px; font-size:24px}
+    p{margin:10px 0; color:var(--sub); line-height:1.5}
+    .ok{color:var(--accent)}
+    .err{color:var(--danger)}
+    .cta{margin-top:18px; display:inline-block; padding:10px 14px; border-radius:10px; border:1px solid var(--border); color:var(--text); text-decoration:none}
+    .small{font-size:12px; color:var(--sub); margin-top:14px}
+  </style>
+</head>
+<body>
+  <main class="card" id="app">
+    <div class="badge">Account Verification</div>
+    <h1 id="title">Checking…</h1>
+    <p id="msg">One moment while we confirm your status.</p>
+    <a class="cta" id="backLink" href="#">Return to the app</a>
+    <div class="small" id="detail"></div>
+  </main>
+
+  <script>
+    // Set this to your app/site deep link or web URL (custom domain works fine):
+    const RETURN_URL = 'https://your-custom-domain.tld/';
+    // Usage examples:
+    //   https://your-custom-domain.tld/?status=success
+    //   https://your-custom-domain.tld/?status=error
+    // Or pass through tokens and handle client-side if needed.
+
+    const params = new URLSearchParams(location.search);
+    const status = (params.get('status') || '').toLowerCase();
+
+    const title = document.getElementById('title');
+    const msg = document.getElementById('msg');
+    const backLink = document.getElementById('backLink');
+    const detail = document.getElementById('detail');
+
+    backLink.href = RETURN_URL;
+
+    if (status === 'success') {
+      title.textContent = 'You’re verified! 🎉';
+      title.classList.add('ok');
+      msg.textContent = 'Your account has been verified. You can safely return to the app.';
+      detail.textContent = '';
+    } else if (status === 'error') {
+      title.textContent = 'Verification failed';
+      title.classList.add('err');
+      msg.textContent = 'We couldn’t confirm your account. The link may be expired or already used.';
+      detail.textContent = 'Request a new verification email and click the latest link.';
+    } else {
+      title.textContent = 'Almost there…';
+      msg.textContent = 'Open this page from your verification email link, or include ?status=success|error.';
+      detail.textContent = 'Example: ?status=success';
+    }
+  </script>
+</body>
+</html>
